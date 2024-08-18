@@ -56,14 +56,14 @@ async function createWindow() {
                 try {
                     // VBScript to set the wallpaper using the image path and refresh the desktop
                     const vbscript = `
-Set WshShell = WScript.CreateObject("WScript.Shell")
-imagePath = "${imagePath.replace(/\\/g, '\\\\')}"
+Set WshShell = CreateObject("WScript.Shell")
+imagePath = "${imagePath}"
 WshShell.RegWrite "HKCU\\Control Panel\\Desktop\\Wallpaper", imagePath
-Set objShell = CreateObject("Shell.Application")
-objShell.ShellExecute "rundll32.exe", "user32.dll,UpdatePerUserSystemParameters", "", "open", 1
+Set WshShell = WScript.CreateObject("WScript.Shell")
+WshShell.Run "rundll32.exe user32.dll,UpdatePerUserSystemParameters", 1, True
                     `;
 
-                    const vbscriptPath = path.join(wallpapersPath, `setWallpaper.vbs`);
+                    const vbscriptPath = path.join(wallpapersPath, `setWallpaper${dateStr}.vbs`);
                     fs.writeFileSync(vbscriptPath, vbscript, { encoding: 'utf-16le' });
 
                     exec(`cscript //nologo "${vbscriptPath}"`, (error, stdout, stderr) => {
